@@ -1,10 +1,16 @@
 Charts = new Mongo.Collection("charts");
 
 if (Meteor.isServer) {
-
+  Meteor.publish("charts", function() {
+    return Charts.find({
+      owner: this.userId
+    });
+  });
 }
 
 if (Meteor.isClient) {
+
+  Meteor.subscribe('charts');
 
     Template.home.events({
         "submit .addChart": function(event){
@@ -56,18 +62,17 @@ if (Meteor.isClient) {
 }
 
 Meteor.methods({
-  addChart: function (title) {
-    if (! Meteor.userId()) {
+  addChart: function(title) {
+    if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
 
-    var newChart = Charts.insert({
-        title: title,
+    return Charts.insert({
+      title: title,
       createdAt: new Date(),
       owner: Meteor.userId(),
       username: Meteor.user().username
     });
-      return newChart._id;
   },
 
     updateChart: function(chartId, title, source, displayOptions) {
@@ -132,4 +137,3 @@ Router.map(function(){
     }
   );
 });
-
