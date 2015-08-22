@@ -30,30 +30,38 @@ if (Meteor.isClient) {
     });
 
   Template.chart.events({
-      "click #loadData": function (event) {
+    "click #loadData": function(event, template) {
       event.preventDefault();
-      var dataSource = event.target.dataSource.value;
-        d3.csv(dataSource, function(rows){
-            var table = d3.selectAll('table');
-            var tr = table.selectAll('tr').data(rows).enter().append('tr');
-            var td = tr.selectAll('td').data(function(d){
-                return Object.keys(d).map(function(k){return d[k]});
-            }).enter().append('td').text(function(d) { return d; });
-            var xAxisSelect = d3.selectAll('select');
-            xAxisSelect.selectAll('option').data(Object.keys(rows[0])).enter()
-                .append('option')
-                .attr('value', function(d){ return d;})
-                .text(function(d) { return d;});
+      var dataSource = template.find('#dataSource').value;
+      d3.csv(dataSource, function(rows) {
+        var table = d3.selectAll('table');
+        var tr = table.selectAll('tr').data(rows).enter().append('tr');
+        var td = tr.selectAll('td').data(function(d) {
+          return Object.keys(d).map(function(k) {
+            return d[k]
+          });
+        }).enter().append('td').text(function(d) {
+          return d;
         });
+        var xAxisSelect = d3.selectAll('select');
+        xAxisSelect.selectAll('option').data(Object.keys(rows[0])).enter()
+          .append('option')
+          .attr('value', function(d) {
+            return d;
+          })
+          .text(function(d) {
+            return d;
+          });
+      });
     },
-      "submit .newChart": function(event){
-          event.preventDefault();
-            Meteor.call('updateChart', this._id, event.target.title.value, event.target.dataSource.value,{
-                type: 'line',
-                xAxis: event.target.xAxisSelect.value,
-                yAxis: event.target.yAxisSelect.value
-            })
-      }
+    "submit .newChart": function(event) {
+      event.preventDefault();
+      Meteor.call('updateChart', this._id, event.target.title.value, event.target.dataSource.value, {
+        type: 'line',
+        xAxis: event.target.xAxisSelect.value,
+        yAxis: event.target.yAxisSelect.value
+      })
+    }
   });
 
     Accounts.ui.config({
