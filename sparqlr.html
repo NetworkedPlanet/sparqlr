@@ -8,15 +8,51 @@
 </template>
 
 <template name="home">
+  {{> loginButtons }}
   <span><a href="{{pathFor 'about'}}">About</a></span>
+  <span><a href="{{pathFor 'addChart'}}">Add A Chart</a></span>
+
+  <h2>Create A Chart</h2>
+  <form class="addChart">
+    <input type="text" name="title"/>
+    <input type="submit"/>
+  </form>
+
+  <ul>
+    {{#each charts}}
+      {{> chartLink }}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="chartLink">
+  <li>
+    <a href="{{pathFor 'chart'}}">{{title}}</a>
+  </li>
 </template>
 
 <template name="about">
   About
 </template>
 
-<template name="addChart">
+<template name="chart">
   <form class="newChart">
-    <input type="text" name="dataSource" />
+    <label>Title</label>
+    <input type="text" name="title" value="{{title}}"/>
+    <br/>
+    <label>Data URL: </label>
+    <input type="text" name="dataSource" value="{{dataSource}}" />
+    <br/>
+    <button id="loadData">Load Data</button>
+    <select id="xAxisSelect"></select>
+    <select id="yAxisSelect"></select>
+    <input type="submit"/>
   </form>
+
+  <div class="tableContainer">
+    <table>
+
+    </table>
+  </div>
+
 </template>
