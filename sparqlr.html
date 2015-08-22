@@ -1,17 +1,16 @@
-
 <template name="shell">
   <body>
     <div class="container">
+      {{> loginButtons }}
+      <span><a href="{{pathFor 'about'}}">About</a></span>
+      <span><a href="{{pathFor 'home'}}">Add A Chart</a></span>
+
       {{> yield}}
     </div>
   </body>
 </template>
 
 <template name="home">
-  {{> loginButtons }}
-  <span><a href="{{pathFor 'about'}}">About</a></span>
-  <span><a href="{{pathFor 'addChart'}}">Add A Chart</a></span>
-
   <h2>Create A Chart</h2>
   <form class="addChart">
     <input type="text" name="title"/>
