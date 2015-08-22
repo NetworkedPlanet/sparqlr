@@ -9,3 +9,4 @@ accounts-ui
 accounts-password
 d3js:d3
 iron:router
+aslagle:reactive-table
