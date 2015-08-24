@@ -12,37 +12,35 @@ if (Meteor.isClient) {
 
   Meteor.subscribe('charts');
 
-    Template.home.events({
-        "submit .addChart": function(event){
-            event.preventDefault();
-            var chartId = Meteor.call('addChart', event.target.title.value);
-            Router.go('/chart/' + chartId);
-        }
-    });
+  Template.home.events({
+    "submit .addChart": function(event) {
+      event.preventDefault();
+      var chartId = Meteor.call('addChart', event.target.title.value);
+      Router.go('/chart/' + chartId);
+    }
+  });
 
-    Template.home.helpers({
-        charts: function(){
-            console.log('Getting the charts');
-            var allTheCharts = Charts.find();
-            console.log('There are ' + allTheCharts.length + ' charts');
-            return allTheCharts;
-        }
-    });
+  Template.home.helpers({
+    charts: function() {
+      console.log('Getting the charts');
+      var allTheCharts = Charts.find();
+      console.log('There are ' + allTheCharts.length + ' charts');
+      return allTheCharts;
+    }
+  });
+
+  Template.chart.helpers({
+    dataTable: function() {
+      return Session.get('data') || [];
+    }
+  });
 
   Template.chart.events({
     "click #loadData": function(event, template) {
       event.preventDefault();
       var dataSource = template.find('#dataSource').value;
       d3.csv(dataSource, function(rows) {
-        var table = d3.selectAll('table');
-        var tr = table.selectAll('tr').data(rows).enter().append('tr');
-        var td = tr.selectAll('td').data(function(d) {
-          return Object.keys(d).map(function(k) {
-            return d[k]
-          });
-        }).enter().append('td').text(function(d) {
-          return d;
-        });
+        Session.set('data', rows);
         var xAxisSelect = d3.selectAll('select');
         xAxisSelect.selectAll('option').data(Object.keys(rows[0])).enter()
           .append('option')
