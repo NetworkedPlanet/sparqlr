@@ -60,9 +60,24 @@ if (Meteor.isClient) {
         type: 'line',
         xAxis: event.target.xAxisSelect.value,
         yAxis: event.target.yAxisSelect.value
-      })
+      });
+        Router.go('/view/' + this._id);
     }
   });
+
+    Template.chartView.onRendered(function(){
+        console.log('Eep');
+        var template = this.data;
+            d3.csv(template.dataSource, function(rows){
+                var data = rows.map(function(row){ return { x: row[template.displayOptions.xAxis], y:row[template.displayOptions.yAxis]}});
+               var svg = d3.selectAll('.chart')
+                   .selectAll('div')
+                   .data(data).enter()
+                   .append('div').style(function(d) { return {width: d.y};})
+                   .text(function(d){return d.x;} )
+
+            });
+    });
 
     Accounts.ui.config({
         passwordSignupFields: "USERNAME_ONLY"
@@ -86,12 +101,12 @@ Meteor.methods({
     updateChart: function(chartId, title, source, displayOptions) {
         var chart = Charts.findOne(chartId);
         Charts.update(chartId, {
-            set: {
+            $set: {
                 title: title,
                 dataSource: source,
                 displayOptions: displayOptions
             }
-        })
+        });
     },
 
     setOptions : function(chartId, opts){
@@ -119,4 +134,14 @@ Router.map(function(){
         }
     }
   );
+    this.route(
+        'chartView',
+        {
+            path: '/view/:_id',
+            layoutTemplate: 'shell',
+            data: function(){
+                return Charts.findOne({_id: this.params._id});
+            },
+        }
+    )
 });

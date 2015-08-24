@@ -1,3 +1,7 @@
+<head>
+
+</head>
+
 <template name="shell">
   <body>
     <div class="container">
@@ -26,7 +30,8 @@
 
 <template name="chartLink">
   <li>
-    <a href="{{pathFor 'chart'}}">{{title}}</a>
+    <span>{{title}}</span>
+    <a href="{{pathFor 'chart'}}">edit</a> | <a href="{{pathFor 'chartView'}}">view</a>
   </li>
 </template>
 
@@ -54,4 +59,10 @@
     </table>
   </div>
 
+</template>
+
+<template name="chartView">
+  <h1>{{title}}</h1>
+  <a href="{{pathFor 'chart'}}">Edit this configuration</a>
+  <div class="chart"></div>
 </template>
