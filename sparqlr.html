@@ -1,45 +1,64 @@
 <head>
-  <title>Sparqlr</title>
+
 </head>
 
-<body>
-  <div class="container">
-    <header>
-      <h1>
-        Sparqlr ({{incompleteCount}})
-      </h1>
-      <label class="hide-completed">
-        <input type="checkbox" checked="{{hideCompleted}}" />
-          Hide Completed Tasks
-      </label>
-      {{> loginButtons}}
-      {{#if currentUser}}
-        <form class="new-task">
-          <input type="text" name="text" placeholder="Type to add new tasks" />
-        </form>
-      {{/if}}
-    </header>
-    <ul>
-      {{#each tasks}}
-        {{> task}}
-      {{/each}}
-    </ul>
-  </div>
-</body>
+<template name="shell">
+  <body>
+    <div class="container">
+      {{> loginButtons }}
+      <span><a href="{{pathFor 'about'}}">About</a></span>
+      <span><a href="{{pathFor 'home'}}">Add A Chart</a></span>
 
-<template name="task">
-  <li class="{{#if checked}}checked{{/if}} {{#if private}}private{{/if}}">
-    <button class="delete">&times;</button>
-    <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
-    {{#if isOwner}}
-      <button class="toggle-private">
-        {{#if private}}
-          Private
-        {{else}}
-          Public
-        {{/if}}
-      </button>
-    {{/if}}
-    <span class="text"><strong>{{username}}</strong> - {{text}}</span>
+      {{> yield}}
+    </div>
+  </body>
+</template>
+
+<template name="home">
+  <h2>Create A Chart</h2>
+  <form class="addChart">
+    <input type="text" name="title"/>
+    <input type="submit"/>
+  </form>
+
+  <ul>
+    {{#each charts}}
+      {{> chartLink }}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="chartLink">
+  <li>
+    <span>{{title}}</span>
+    <a href="{{pathFor 'chart'}}">edit</a> | <a href="{{pathFor 'chartView'}}">view</a>
   </li>
+</template>
+
+<template name="about">
+  About
+</template>
+
+<template name="chart">
+  <form class="newChart">
+    <label>Title</label>
+    <input type="text" name="title" value="{{title}}"/>
+    <br/>
+    <label>Data URL: </label>
+    <input type="text" id="dataSource" value="{{dataSource}}" />
+    <br/>
+    <button id="loadData">Load Data</button>
+    <select id="xAxisSelect"></select>
+    <select id="yAxisSelect"></select>
+    <input type="submit"/>
+  </form>
+
+  {{> reactiveTable collection=dataTable }}
+
+</template>
+
+<template name="chartView">
+  <h1>{{title}}</h1>
+  <a href="{{pathFor 'chart'}}">Edit this configuration</a>
+  <div class="chart"></div>
 </template>
